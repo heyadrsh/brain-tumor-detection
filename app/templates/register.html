@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-5" style="color: #2c3e50;">Create Your Account</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <img src="{{ url_for('static', filename='images/register-icon.png') }}" alt="Register" class="mb-3" style="width: 64px; height: 64px;">
+                        <h2 class="text-primary">Join Us</h2>
+                        <p class="text-muted">Create an account to get started</p>
+                    </div>
+                    <form method="POST">
+                        <div class="mb-4">
+                            <label for="username" class="form-label text-muted">Username</label>
+                            <input type="text" class="form-control form-control-lg bg-light" id="username" name="username" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="form-label text-muted">Email</label>
+                            <input type="email" class="form-control form-control-lg bg-light" id="email" name="email" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="form-label text-muted">Password</label>
+                            <input type="password" class="form-control form-control-lg bg-light" id="password" name="password" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Create Account</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-4">
+                        <p class="text-muted">Already have an account? <a href="{{ url_for('login') }}" class="text-primary text-decoration-none">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add hover effect to the card
+    const card = document.querySelector('.card');
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-5px)';
+        this.style.transition = 'transform 0.3s ease';
+    });
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+    });
+});
+</script>
+{% endblock %} 

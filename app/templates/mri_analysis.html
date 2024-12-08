@@ -1,0 +1,354 @@
+{% extends "base.html" %}
+{% from 'image_viewer.html' import image_viewer %}
+{% from 'model_info.html' import model_info %}
+
+{% block title %}MRI Analysis{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="{{ url_for('select_scan_type') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Selection
+        </a>
+    </div>
+
+    <h1 class="text-center mb-5">MRI Analysis</h1>
+    
+    <!-- Upload Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form id="upload-form" method="POST" enctype="multipart/form-data" class="text-center">
+                        <div class="upload-area p-4 bg-light rounded mb-3">
+                            <i class="fas fa-upload fa-2x mb-3 text-primary"></i>
+                            <h5>Upload MRI Scan</h5>
+                            <p class="text-muted">Drag and drop your file here or click to browse</p>
+                            <input type="file" name="file" id="file-input" class="form-control" accept="image/*" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Analyze Scan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Section (Hidden initially) -->
+    <div id="analysis-section" class="d-none">
+        <div class="row">
+            <!-- Image Viewer Component -->
+            <div class="col-md-8">
+                {{ image_viewer() }}
+            </div>
+
+            <!-- Model Info Component -->
+            <div class="col-md-4">
+                {{ model_info(model_type='mri') }}
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Analysis Results</h5>
+                        <div class="results-content">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="result-item mb-3">
+                                        <label class="text-muted mb-2">Primary Classification</label>
+                                        <h4 class="result-value" id="primary-classification">-</h4>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="result-item mb-3">
+                                        <label class="text-muted mb-2">Confidence Level</label>
+                                        <h4 class="result-value" id="confidence-level">-</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="additional-info mt-3">
+                                <h6 class="text-muted mb-3">Additional Information</h6>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <span class="info-label">Scan Type</span>
+                                        <span class="info-value">MRI</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Resolution</span>
+                                        <span class="info-value" id="scan-resolution">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Processing Time</span>
+                                        <span class="info-value" id="processing-time">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add this after the Analysis Results section -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Processing Metrics</h5>
+                        <div class="metrics-list">
+                            <div class="metric-item">
+                                <span class="metric-label">Total Time</span>
+                                <span class="metric-value" id="total-time">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Preprocessing</span>
+                                <span class="metric-value" id="preprocessing-time">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Inference</span>
+                                <span class="metric-value" id="inference-time">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Model Information</h5>
+                        <div class="metrics-list">
+                            <div class="metric-item">
+                                <span class="metric-label">Version</span>
+                                <span class="metric-value" id="model-version">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Last Updated</span>
+                                <span class="metric-value" id="last-updated">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Accuracy</span>
+                                <span class="metric-value" id="model-accuracy">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Hardware Utilization</h5>
+                        <div class="metrics-list">
+                            <div class="metric-item">
+                                <span class="metric-label">GPU Memory</span>
+                                <span class="metric-value" id="gpu-memory">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">CPU Usage</span>
+                                <span class="metric-value" id="cpu-usage">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Batch Size</span>
+                                <span class="metric-value" id="batch-size">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/image-viewer.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/model-info.css') }}">
+<style>
+    .upload-area {
+        border: 2px dashed #3498db;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    .upload-area:hover {
+        border-color: #2980b9;
+        background-color: #f8f9fa;
+    }
+    #file-input {
+        max-width: 300px;
+        margin: 1rem auto;
+    }
+    .result-item {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 12px;
+    }
+    .result-value {
+        color: #2c3e50;
+        margin: 0;
+    }
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    .info-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    .info-value {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+    .metrics-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .metric-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    .metric-item:hover {
+        background: #e9ecef;
+    }
+    .metric-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    .metric-value {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<!-- Image Processing Script -->
+<script src="{{ url_for('static', filename='js/image-processor.js') }}"></script>
+<script src="{{ url_for('static', filename='js/model-info.js') }}"></script>
+<script>
+let imageProcessor;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('upload-form');
+    const fileInput = document.getElementById('file-input');
+    const analysisSection = document.getElementById('analysis-section');
+
+    // Initialize drag and drop
+    const uploadArea = document.querySelector('.upload-area');
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.add('bg-light');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.remove('bg-light');
+        });
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        fileInput.files = files;
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        formData.append('scan_type', 'mri');
+        
+        try {
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Show analysis section
+                analysisSection.classList.remove('d-none');
+                
+                // Update existing results
+                document.getElementById('primary-classification').textContent = result.prediction;
+                document.getElementById('confidence-level').textContent = result.confidence;
+                
+                // Update processing metrics
+                document.getElementById('total-time').textContent = result.metrics.total_time;
+                document.getElementById('preprocessing-time').textContent = result.metrics.preprocessing;
+                document.getElementById('inference-time').textContent = result.metrics.inference;
+                
+                // Update model information
+                document.getElementById('model-version').textContent = result.model_info.version;
+                document.getElementById('last-updated').textContent = result.model_info.last_updated;
+                document.getElementById('model-accuracy').textContent = result.model_info.accuracy + '%';
+                document.getElementById('batch-size').textContent = result.model_info.batch_size;
+                
+                // Update hardware utilization
+                document.getElementById('gpu-memory').textContent = result.hardware.gpu_memory || 'N/A';
+                document.getElementById('cpu-usage').textContent = result.hardware.cpu_usage;
+                
+                // Get and display image resolution
+                const img = new Image();
+                img.onload = function() {
+                    document.getElementById('scan-resolution').textContent = `${this.width}x${this.height}`;
+                };
+                img.src = URL.createObjectURL(fileInput.files[0]);
+                
+                // Initialize image processor
+                const image = document.getElementById('uploaded-image');
+                image.src = URL.createObjectURL(fileInput.files[0]);
+                
+                imageProcessor = new ImageProcessor('uploaded-image', 'image-canvas');
+
+                // Update confidence scores
+                if (window.modelInfo) {
+                    window.modelInfo.updateConfidenceScores(result.scores || {
+                        [result.prediction.toLowerCase()]: parseFloat(result.confidence) / 100
+                    });
+                }
+            } else {
+                alert('Error: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred during analysis');
+        }
+    });
+});
+</script>
+{% endblock %} 
