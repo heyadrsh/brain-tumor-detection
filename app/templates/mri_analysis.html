@@ -350,5 +350,66 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+function generateReport() {
+    if (!currentImage) {
+        alert('Please analyze an image first');
+        return;
+    }
+    
+    fetch('/generate_report', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            image_path: currentImage,
+            scan_type: 'MRI',
+            patient_name: '{{ current_user.username }}'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.open(data.report_url, '_blank');
+        } else {
+            alert('Error generating report: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error generating report');
+    });
+}
+
+function exportDICOM() {
+    if (!currentImage) {
+        alert('Please analyze an image first');
+        return;
+    }
+    
+    fetch('/export_dicom', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            image_path: currentImage,
+            patient_name: '{{ current_user.username }}'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.download_url;
+        } else {
+            alert('Error exporting DICOM: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error exporting DICOM');
+    });
+}
 </script>
 {% endblock %} 
