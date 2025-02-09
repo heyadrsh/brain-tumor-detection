@@ -11,19 +11,84 @@ import cv2
 import time
 import json
 
-from .models import User
 from . import db
+from .models import User
 from .utils.report_generator import generate_report
 from .utils.dicom_exporter import export_to_dicom
 from src.brain_tumor_detection import BrainTumorCNN, class_names, image_size
 from src.ct_classification import CTNet
 
 def init_routes(app):
+    # Model Information
+    MODEL_INFO = {
+        'mri': {
+            'name': 'Brain Tumor Detection (MRI)',
+            'classes': class_names,
+            'model': BrainTumorCNN(),
+            'weights_path': 'models/brain_tumor_detection.pth',
+            'transform': transforms.Compose([
+                transforms.Resize(image_size),
+                transforms.ToTensor(),
+            ])
+        },
+        'ct': {
+            'name': 'CT Scan Analysis',
+            'classes': ['Normal', 'Abnormal'],
+            'model': CTNet(),
+            'weights_path': 'models/ct_classification.pth',
+            'transform': transforms.Compose([
+                transforms.Resize((224, 224)),
+                transforms.ToTensor(),
+            ])
+        }
+    }
+
     @app.route('/')
     def index():
         return render_template('index.html')
+
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        if request.method == 'POST':
+            email = request.form.get('email')
+            password = request.form.get('password')
+            user = User.query.filter_by(email=email).first()
+            
+            if user and check_password_hash(user.password, password):
+                login_user(user)
+                return redirect(url_for('index'))
+            else:
+                flash('Invalid email or password')
         
-    # Copy all your routes from app.py here
-    # Make sure to properly indent them under init_routes function
+        return render_template('login.html')
+
+    @app.route('/register', methods=['GET', 'POST'])
+    def register():
+        if request.method == 'POST':
+            email = request.form.get('email')
+            password = request.form.get('password')
+            
+            if User.query.filter_by(email=email).first():
+                flash('Email already exists')
+                return redirect(url_for('register'))
+            
+            new_user = User(
+                email=email,
+                password=generate_password_hash(password, method='sha256')
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            
+            return redirect(url_for('login'))
+        
+        return render_template('register.html')
+
+    @app.route('/logout')
+    @login_required
+    def logout():
+        logout_user()
+        return redirect(url_for('index'))
+
+    # Add all your other routes here...
     
     return app 

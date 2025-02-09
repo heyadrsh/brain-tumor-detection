@@ -20,14 +20,18 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
     login_manager.init_app(app)
-    login_manager.login_view = 'auth.login'
+    login_manager.login_view = 'login'
     
     with app.app_context():
         # Import routes
-        from .routes import init_routes
+        from app.routes import init_routes
         init_routes(app)
         
         # Create database tables
         db.create_all()
     
-    return app 
+    return app
+
+# Create the application instance
+application = create_app()
+app = application  # For compatibility with both app:app and wsgi:application patterns 
