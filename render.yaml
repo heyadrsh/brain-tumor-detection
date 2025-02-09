@@ -3,9 +3,9 @@ services:
     name: brain-tumor-detection
     env: python
     buildCommand: |
-      git lfs pull
       pip install -r requirements.txt
-    startCommand: gunicorn wsgi:app
+      python -c "import torch; print('PyTorch version:', torch.__version__)"
+    startCommand: gunicorn main:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.0
@@ -13,4 +13,12 @@ services:
         generateValue: true
       - key: FLASK_ENV
         value: production
+      - key: UPLOAD_FOLDER
+        value: /tmp/uploads
+      - key: DATABASE_URL
+        value: sqlite:///instance/users.db
+    disk:
+      name: uploads
+      mountPath: /tmp/uploads
+      sizeGB: 1
     autoDeploy: true 
