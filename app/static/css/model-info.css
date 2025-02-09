@@ -1,0 +1,212 @@
+.model-info-container {
+    margin-top: 2rem;
+}
+
+/* Model Details */
+.model-details {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.detail-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+/* Confidence Scores */
+.confidence-scores {
+    margin-top: 1rem;
+}
+
+.score-item {
+    margin-bottom: 1rem;
+}
+
+.score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.score-label {
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.score-value {
+    font-weight: 500;
+    color: #3498db;
+}
+
+.progress {
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    transition: width 0.6s ease;
+}
+
+/* Architecture Diagram */
+.architecture-diagram {
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    overflow-x: auto;
+}
+
+.layer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    min-width: 600px;
+    position: relative;
+}
+
+.layer {
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    text-align: center;
+    min-width: 120px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.layer:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.input-layer {
+    background: linear-gradient(135deg, #00b09b, #96c93d);
+}
+
+.conv-layer {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.pool-layer {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.dense-layer {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.output-layer {
+    background: linear-gradient(135deg, #f1c40f, #f39c12);
+}
+
+/* Layer connections */
+.layer-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: calc(100% - 60px);
+    background: #dee2e6;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+.layer {
+    z-index: 1;
+}
+
+/* Tooltips */
+.tooltip {
+    font-size: 0.85rem;
+}
+
+.tooltip-inner {
+    max-width: 200px;
+    padding: 0.5rem 1rem;
+    background: #2c3e50;
+    border-radius: 6px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .model-details {
+        padding: 1rem;
+    }
+
+    .layer-container {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .layer {
+        padding: 0.75rem 1.5rem;
+        min-width: 100px;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.model-info-container {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Modal customization */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+}
+
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.25rem 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-title {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.btn-close {
+    box-shadow: none !important;
+} 

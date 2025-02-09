@@ -1,0 +1,605 @@
+{% extends "base.html" %}
+{% from 'image_viewer.html' import image_viewer %}
+{% from 'model_info.html' import model_info %}
+
+{% block title %}CT Analysis{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="{{ url_for('select_scan_type') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Selection
+        </a>
+    </div>
+
+    <h1 class="text-center mb-4">CT Analysis</h1>
+    
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-4">Available Features</h5>
+                    <div class="row text-center">
+                        <div class="col">
+                            <div class="feature-item">
+                                <i class="fas fa-user-shield fa-2x mb-2 text-primary"></i>
+                                <h6>User Authentication</h6>
+                                <p class="small text-muted">Secure access control</p>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="feature-item">
+                                <i class="fas fa-brain fa-2x mb-2 text-success"></i>
+                                <h6>Scan Analysis</h6>
+                                <p class="small text-muted">MRI & CT processing</p>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="feature-item">
+                                <i class="fas fa-file-medical-alt fa-2x mb-2 text-info"></i>
+                                <h6>Report Generation</h6>
+                                <p class="small text-muted">Detailed PDF reports</p>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="feature-item">
+                                <i class="fas fa-file-export fa-2x mb-2 text-warning"></i>
+                                <h6>DICOM Export</h6>
+                                <p class="small text-muted">Medical format export</p>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="feature-item">
+                                <i class="fas fa-chart-line fa-2x mb-2 text-danger"></i>
+                                <h6>Model Info</h6>
+                                <p class="small text-muted">Performance metrics</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form id="upload-form" method="POST" enctype="multipart/form-data" class="text-center">
+                        <div class="upload-area p-4 bg-light rounded mb-3">
+                            <i class="fas fa-upload fa-2x mb-3 text-primary"></i>
+                            <h5>Upload CT Scan</h5>
+                            <p class="text-muted">Drag and drop your file here or click to browse</p>
+                            <input type="file" name="file" id="file-input" class="form-control" accept="image/*" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Analyze Scan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Section (Hidden initially) -->
+    <div id="analysis-section" class="d-none">
+        <div class="row">
+            <!-- Image Viewer Component -->
+            <div class="col-md-8">
+                {{ image_viewer() }}
+            </div>
+
+            <!-- Model Info Component -->
+            <div class="col-md-4">
+                {{ model_info(model_type='ct') }}
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Analysis Results</h5>
+                        <div class="results-content">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="result-item mb-3">
+                                        <label class="text-muted mb-2">Primary Classification</label>
+                                        <h4 class="result-value" id="predictionResult">-</h4>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="result-item mb-3">
+                                        <label class="text-muted mb-2">Confidence Level</label>
+                                        <h4 class="result-value" id="confidenceLevel">-</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Patient Information Section -->
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-4">Patient Information</h5>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group mb-3">
+                                                        <label for="patientName" class="form-label">Patient Name</label>
+                                                        <input type="text" id="patientName" class="form-control" placeholder="Enter patient name">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group mb-3">
+                                                        <label for="patientAge" class="form-label">Age</label>
+                                                        <input type="number" id="patientAge" class="form-control" min="0" max="100" placeholder="Enter age">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group mb-3">
+                                                        <label for="patientGender" class="form-label">Gender</label>
+                                                        <select id="patientGender" class="form-select">
+                                                            <option value="">Select gender</option>
+                                                            <option value="Male">Male</option>
+                                                            <option value="Female">Female</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF Export Button -->
+        <div class="row mt-4 mb-4">
+            <div class="col-md-12 text-center">
+                <button id="exportPdfBtn" onclick="generatePDF()" class="btn btn-primary btn-lg px-5">
+                    <i class="fas fa-file-pdf me-2"></i>Download PDF Report
+                </button>
+            </div>
+        </div>
+
+        <!-- Processing Metrics -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Processing Metrics</h5>
+                        <div class="metrics-list">
+                            <div class="metric-item">
+                                <span class="metric-label">Total Time</span>
+                                <span class="metric-value" id="total-time">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Preprocessing</span>
+                                <span class="metric-value" id="preprocessing-time">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Inference</span>
+                                <span class="metric-value" id="inference-time">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Model Information</h5>
+                        <div class="metrics-list">
+                            <div class="metric-item">
+                                <span class="metric-label">Version</span>
+                                <span class="metric-value" id="model-version">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Last Updated</span>
+                                <span class="metric-value" id="last-updated">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Accuracy</span>
+                                <span class="metric-value" id="model-accuracy">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Hardware Utilization</h5>
+                        <div class="metrics-list">
+                            <div class="metric-item">
+                                <span class="metric-label">GPU Memory</span>
+                                <span class="metric-value" id="gpu-memory">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">CPU Usage</span>
+                                <span class="metric-value" id="cpu-usage">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Batch Size</span>
+                                <span class="metric-value" id="batch-size">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/image-viewer.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/model-info.css') }}">
+<style>
+    /* Feature Section Styles */
+    .feature-item {
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        border-radius: 10px;
+    }
+    
+    .feature-item:hover {
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transform: translateY(-5px);
+    }
+    
+    .feature-item i {
+        transition: all 0.3s ease;
+    }
+    
+    .feature-item:hover i {
+        transform: scale(1.2);
+    }
+    
+    .feature-item h6 {
+        margin: 0.5rem 0;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    .feature-item p {
+        margin-bottom: 0;
+    }
+
+    .upload-area {
+        border: 2px dashed #3498db;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    .upload-area:hover {
+        border-color: #2980b9;
+        background-color: #f8f9fa;
+    }
+    #file-input {
+        max-width: 300px;
+        margin: 1rem auto;
+    }
+    .result-item {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 12px;
+    }
+    .result-value {
+        color: #2c3e50;
+        margin: 0;
+    }
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    .info-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    .info-value {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+    .metrics-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .metric-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .metric-item:last-child {
+        border-bottom: none;
+    }
+    .metric-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    .metric-value {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+    .result-item {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+    .result-value {
+        color: #2c3e50;
+        margin: 0.5rem 0 0 0;
+        font-size: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<!-- Image Processing Script -->
+<script src="{{ url_for('static', filename='js/image-processor.js') }}"></script>
+<script src="{{ url_for('static', filename='js/model-info.js') }}"></script>
+<script>
+let imageProcessor;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('upload-form');
+    const fileInput = document.getElementById('file-input');
+    const analysisSection = document.getElementById('analysis-section');
+
+    // Initialize drag and drop
+    const uploadArea = document.querySelector('.upload-area');
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.add('bg-light');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.remove('bg-light');
+        });
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        fileInput.files = files;
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        formData.append('scan_type', 'ct');
+        
+        try {
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Show analysis section
+                analysisSection.classList.remove('d-none');
+                
+                // Update primary results
+                document.getElementById('predictionResult').textContent = result.prediction;
+                document.getElementById('confidenceLevel').textContent = result.confidence;
+                
+                // Update processing metrics
+                document.getElementById('total-time').textContent = result.metrics.total_time;
+                document.getElementById('preprocessing-time').textContent = result.metrics.preprocessing;
+                document.getElementById('inference-time').textContent = result.metrics.inference;
+                
+                // Update model information
+                document.getElementById('model-version').textContent = result.model_info.version;
+                document.getElementById('last-updated').textContent = result.model_info.last_updated;
+                document.getElementById('model-accuracy').textContent = result.model_info.accuracy + '%';
+                document.getElementById('batch-size').textContent = result.model_info.batch_size;
+                
+                // Update hardware utilization
+                document.getElementById('gpu-memory').textContent = result.hardware.gpu_memory || 'N/A';
+                document.getElementById('cpu-usage').textContent = result.hardware.cpu_usage || 'N/A';
+                
+                // Get and display image resolution
+                const img = new Image();
+                img.onload = function() {
+                    document.getElementById('scan-resolution').textContent = `${this.width}x${this.height}`;
+                };
+                img.src = URL.createObjectURL(fileInput.files[0]);
+                
+                // Initialize image processor
+                const image = document.getElementById('uploaded-image');
+                image.src = URL.createObjectURL(fileInput.files[0]);
+                
+                imageProcessor = new ImageProcessor('uploaded-image', 'image-canvas');
+
+                // Update confidence scores
+                if (window.modelInfo) {
+                    window.modelInfo.updateConfidenceScores(result.scores);
+                }
+            } else {
+                alert('Error: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred during analysis');
+        }
+    });
+});
+
+function generatePDF() {
+    try {
+        // Show loading state
+        const exportBtn = document.querySelector('.btn-primary.btn-lg');
+        if (!exportBtn) {
+            throw new Error('Export button not found');
+        }
+        const originalText = exportBtn.textContent;
+        exportBtn.textContent = 'Generating PDF...';
+        exportBtn.disabled = true;
+
+        // Validate patient information
+        const patientName = document.getElementById('patientName')?.value || '';
+        const patientAge = document.getElementById('patientAge')?.value;
+        const patientGender = document.getElementById('patientGender')?.value;
+
+        if (!patientName.trim()) {
+            throw new Error('Please enter patient name');
+        }
+        if (!patientAge || patientAge < 0 || patientAge > 100) {
+            throw new Error('Please enter a valid age between 0 and 100');
+        }
+        if (!patientGender) {
+            throw new Error('Please select patient gender');
+        }
+
+        // Get the current image from canvas
+        const imageCanvas = document.getElementById('image-canvas');
+        if (!imageCanvas) {
+            throw new Error('No image has been processed yet');
+        }
+
+        // Get prediction and confidence
+        const prediction = document.getElementById('predictionResult')?.textContent || 'Unknown';
+        const confidence = document.getElementById('confidenceLevel')?.textContent || '0%';
+
+        // Prepare the data
+        const data = {
+            patient_name: patientName,
+            patient_age: parseInt(patientAge),
+            patient_gender: patientGender,
+            scan_type: 'CT',
+            prediction: prediction,
+            confidence: confidence,
+            image_path: imageCanvas.toDataURL('image/png')
+        };
+
+        // Send request to generate PDF
+        fetch('/generate_report', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Create a temporary link and trigger download
+                const link = document.createElement('a');
+                link.href = data.report_url;
+                link.download = `CT_Report_${new Date().toISOString().slice(0,10)}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Show success message
+                showNotification('PDF generated successfully!', 'success');
+            } else {
+                throw new Error(data.error || 'Failed to generate PDF');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Failed to generate PDF: ' + error.message, 'error');
+        })
+        .finally(() => {
+            // Reset button state
+            exportBtn.textContent = originalText;
+            exportBtn.disabled = false;
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Failed to generate PDF: ' + error.message, 'error');
+        // Reset button if error occurs during setup
+        const exportBtn = document.querySelector('.btn-primary.btn-lg');
+        if (exportBtn) {
+            exportBtn.textContent = 'Download PDF Report';
+            exportBtn.disabled = false;
+        }
+    }
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    // Style the notification
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.padding = '15px 25px';
+    notification.style.borderRadius = '5px';
+    notification.style.zIndex = '1000';
+    notification.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+    
+    // Set colors based on type
+    if (type === 'error') {
+        notification.style.backgroundColor = '#ff4444';
+        notification.style.color = 'white';
+    } else if (type === 'success') {
+        notification.style.backgroundColor = '#00C851';
+        notification.style.color = 'white';
+    } else {
+        notification.style.backgroundColor = '#33b5e5';
+        notification.style.color = 'white';
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Add fade-in animation
+    notification.style.opacity = '0';
+    notification.style.transition = 'opacity 0.3s ease-in-out';
+    setTimeout(() => notification.style.opacity = '1', 10);
+    
+    // Remove after 3 seconds with fade-out
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+</script>
+{% endblock %} 

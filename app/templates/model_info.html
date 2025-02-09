@@ -1,0 +1,171 @@
+{% macro model_info(model_type='mri') %}
+<div class="model-info-container" data-model-type="{{ model_type }}">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="card-title mb-0">Model Information</h5>
+                <button class="btn btn-sm btn-outline-primary" onclick="toggleModelArchitecture()">
+                    <i class="fas fa-network-wired me-2"></i>View Architecture
+                </button>
+            </div>
+
+            <!-- Model Details -->
+            <div class="model-details mb-4">
+                <div class="detail-item">
+                    <span class="detail-label">Model Type</span>
+                    <span class="detail-value">{{ 'Brain Tumor CNN' if model_type == 'mri' else 'CT Classification Net' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Framework</span>
+                    <span class="detail-value">PyTorch</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Input Size</span>
+                    <span class="detail-value">{{ '150x150' if model_type == 'mri' else '224x224' }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Classes</span>
+                    <span class="detail-value">{{ '4' if model_type == 'mri' else '3' }}</span>
+                </div>
+            </div>
+
+            <!-- Confidence Scores -->
+            <h6 class="mb-3">Confidence Breakdown</h6>
+            <div class="confidence-scores">
+                {% if model_type == 'mri' %}
+                    <div class="score-item">
+                        <div class="score-header">
+                            <span class="score-label">Glioma</span>
+                            <span class="score-value" id="score-glioma">0%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" id="progress-glioma" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-header">
+                            <span class="score-label">Meningioma</span>
+                            <span class="score-value" id="score-meningioma">0%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" id="progress-meningioma" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-header">
+                            <span class="score-label">Pituitary</span>
+                            <span class="score-value" id="score-pituitary">0%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" id="progress-pituitary" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-header">
+                            <span class="score-label">No Tumor</span>
+                            <span class="score-value" id="score-no-tumor">0%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" id="progress-no-tumor" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="score-item">
+                        <div class="score-header">
+                            <span class="score-label">Aneurysm</span>
+                            <span class="score-value" id="score-aneurysm">0%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" id="progress-aneurysm" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-header">
+                            <span class="score-label">Cancer</span>
+                            <span class="score-value" id="score-cancer">0%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" id="progress-cancer" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-header">
+                            <span class="score-label">Tumor</span>
+                            <span class="score-value" id="score-tumor">0%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" id="progress-tumor" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Architecture Modal -->
+    <div class="modal fade" id="architectureModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Model Architecture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="architecture-diagram">
+                        <!-- Architecture visualization will be rendered here -->
+                        <div class="layer-container">
+                            {% if model_type == 'mri' %}
+                                <!-- MRI Model Architecture -->
+                                <div class="layer input-layer" data-bs-toggle="tooltip" title="Input: 150x150x3">
+                                    <span>Input</span>
+                                </div>
+                                <div class="layer conv-layer" data-bs-toggle="tooltip" title="Conv2D: 32 filters, 3x3">
+                                    <span>Conv1</span>
+                                </div>
+                                <div class="layer pool-layer" data-bs-toggle="tooltip" title="MaxPool: 2x2">
+                                    <span>Pool1</span>
+                                </div>
+                                <div class="layer conv-layer" data-bs-toggle="tooltip" title="Conv2D: 64 filters, 3x3">
+                                    <span>Conv2</span>
+                                </div>
+                                <div class="layer pool-layer" data-bs-toggle="tooltip" title="MaxPool: 2x2">
+                                    <span>Pool2</span>
+                                </div>
+                                <div class="layer dense-layer" data-bs-toggle="tooltip" title="Dense: 512 units">
+                                    <span>Dense</span>
+                                </div>
+                                <div class="layer output-layer" data-bs-toggle="tooltip" title="Output: 4 classes">
+                                    <span>Output</span>
+                                </div>
+                            {% else %}
+                                <!-- CT Model Architecture -->
+                                <div class="layer input-layer" data-bs-toggle="tooltip" title="Input: 224x224x3">
+                                    <span>Input</span>
+                                </div>
+                                <div class="layer conv-layer" data-bs-toggle="tooltip" title="Conv2D: 64 filters, 3x3">
+                                    <span>Conv1</span>
+                                </div>
+                                <div class="layer pool-layer" data-bs-toggle="tooltip" title="MaxPool: 2x2">
+                                    <span>Pool1</span>
+                                </div>
+                                <div class="layer conv-layer" data-bs-toggle="tooltip" title="Conv2D: 128 filters, 3x3">
+                                    <span>Conv2</span>
+                                </div>
+                                <div class="layer pool-layer" data-bs-toggle="tooltip" title="MaxPool: 2x2">
+                                    <span>Pool2</span>
+                                </div>
+                                <div class="layer dense-layer" data-bs-toggle="tooltip" title="Dense: 1024 units">
+                                    <span>Dense</span>
+                                </div>
+                                <div class="layer output-layer" data-bs-toggle="tooltip" title="Output: 3 classes">
+                                    <span>Output</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %} 

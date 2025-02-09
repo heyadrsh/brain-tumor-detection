@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-4">
+            <div class="text-center mb-5">
+                <div class="app-logo mb-4">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h1 class="text-secondary fw-normal">Sign in to your account to continue</h1>
+                <p class="text-muted mt-2">Access advanced medical image analysis tools</p>
+            </div>
+            
+            <div class="login-form bg-white p-4 rounded-4 shadow-sm">
+                <form method="POST">
+                    <div class="form-group mb-4">
+                        <label class="form-label">Username</label>
+                        <div class="input-field">
+                            <i class="fas fa-user"></i>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="username" 
+                                   name="username" 
+                                   required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-4">
+                        <label class="form-label">Password</label>
+                        <div class="input-field">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="password" 
+                                   name="password" 
+                                   required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 mb-4">
+                        Sign In
+                    </button>
+                    
+                    <div class="text-center">
+                        <p class="text-secondary">
+                            Don't have an account? 
+                            <a href="{{ url_for('register') }}" class="text-primary text-decoration-none">
+                                Create an account
+                            </a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+
+            <div class="features-section mt-5">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-item text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h6 class="mt-3 mb-2">Secure Access</h6>
+                            <p class="text-muted small">End-to-end encrypted data protection</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-item text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h6 class="mt-3 mb-2">AI Analysis</h6>
+                            <p class="text-muted small">Advanced neural networks</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-item text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <h6 class="mt-3 mb-2">Fast Results</h6>
+                            <p class="text-muted small">Real-time processing</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    body {
+        background-color: #fafafa;
+    }
+
+    .app-logo {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        color: white;
+        font-size: 1.75rem;
+        box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.2);
+    }
+
+    .login-form {
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .form-label {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .input-field {
+        position: relative;
+        background-color: #f0f4ff;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+
+    .input-field i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        font-size: 1rem;
+    }
+
+    .form-control {
+        height: 48px;
+        border: none;
+        background: transparent;
+        padding: 0.75rem 1rem 0.75rem 2.75rem;
+        font-size: 1rem;
+        width: 100%;
+        color: #1f2937;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+        outline: 2px solid #2563eb;
+        outline-offset: -2px;
+    }
+
+    .btn-primary {
+        background-color: #2563eb;
+        border: none;
+        border-radius: 12px;
+        padding: 0.875rem;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .feature-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(37, 99, 235, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        color: #2563eb;
+        font-size: 1.25rem;
+        transition: all 0.2s ease;
+    }
+
+    .feature-item:hover .feature-icon {
+        transform: translateY(-2px);
+        background: #2563eb;
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .feature-item h6 {
+        color: #374151;
+        font-weight: 600;
+    }
+
+    .text-secondary {
+        color: #6b7280 !important;
+    }
+
+    .text-primary {
+        color: #2563eb !important;
+    }
+
+    h1 {
+        font-size: 1.25rem;
+        color: #6b7280;
+    }
+
+    @media (max-width: 768px) {
+        .col-lg-4 {
+            padding: 0 1.5rem;
+        }
+        
+        .features-section {
+            margin-top: 3rem;
+        }
+        
+        .feature-item {
+            margin-bottom: 2rem;
+        }
+    }
+</style>
+{% endblock %} 

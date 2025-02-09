@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Select Scan Type{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">Select Scan Type</h1>
+        <p class="text-secondary fs-5">Choose the type of scan you want to analyze</p>
+    </div>
+    
+    <div class="row justify-content-center g-4">
+        <div class="col-md-6 col-lg-5">
+            <div class="scan-card">
+                <div class="scan-icon mb-4">
+                    <i class="fas fa-brain"></i>
+                </div>
+                
+                <h2 class="scan-title">MRI Analysis</h2>
+                <p class="scan-description">Advanced brain tumor detection and classification using MRI scans</p>
+                
+                <div class="features-list">
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Tumor Detection</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Automated Analysis</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>PDF Report Generation</span>
+                    </div>
+                </div>
+                
+                <a href="/mri_analysis" class="scan-button">
+                    Start MRI Analysis
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-5">
+            <div class="scan-card">
+                <div class="scan-icon mb-4">
+                    <i class="fas fa-microscope"></i>
+                </div>
+                
+                <h2 class="scan-title">CT Analysis</h2>
+                <p class="scan-description">Comprehensive CT scan analysis for various conditions</p>
+                
+                <div class="features-list">
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Tumor Detection</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Instant Results</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Detailed Reporting</span>
+                    </div>
+                </div>
+                
+                <a href="/ct_analysis" class="scan-button">
+                    Start CT Analysis
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    :root {
+        --primary-blue: #0066ff;
+        --hover-blue: #0052cc;
+        --check-green: #10b981;
+        --bg-light: #f8fafc;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+    }
+
+    body {
+        background-color: var(--bg-light);
+    }
+
+    .text-primary {
+        color: var(--primary-blue) !important;
+    }
+
+    .text-secondary {
+        color: var(--text-secondary) !important;
+    }
+
+    .scan-card {
+        background: white;
+        border-radius: 24px;
+        padding: 2rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .scan-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .scan-icon {
+        width: 80px;
+        height: 80px;
+        background: var(--primary-blue);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+
+    .scan-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+    }
+
+    .scan-description {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .features-list {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 2rem;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+        color: var(--text-primary);
+    }
+
+    .feature-item i {
+        color: var(--check-green);
+        font-size: 1.25rem;
+    }
+
+    .scan-button {
+        background: var(--primary-blue);
+        color: white;
+        text-decoration: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 500;
+        margin-top: auto;
+        transition: all 0.3s ease;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .scan-button:hover {
+        background: var(--hover-blue);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .scan-button i {
+        transition: transform 0.3s ease;
+    }
+
+    .scan-button:hover i {
+        transform: translateX(4px);
+    }
+
+    @media (max-width: 768px) {
+        .scan-card {
+            padding: 1.5rem;
+        }
+        
+        .scan-icon {
+            width: 64px;
+            height: 64px;
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %} 
