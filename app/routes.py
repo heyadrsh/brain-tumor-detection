@@ -43,6 +43,10 @@ def init_routes(app):
         }
     }
 
+    @app.route('/health')
+    def health_check():
+        return jsonify({"status": "healthy"}), 200
+
     @app.route('/')
     def index():
         return render_template('index.html')

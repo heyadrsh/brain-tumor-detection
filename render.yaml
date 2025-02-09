@@ -3,7 +3,13 @@ services:
     name: brain-tumor-detection
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    startCommand: gunicorn "app:create_app()"
+    healthCheckPath: /
+    healthCheckTimeout: 100
+    staticPublishPath: /static
+    buildEnvVars:
+      - key: PYTHON_PACKAGES_PATH
+        value: /opt/render/project/src/.packages
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.0
