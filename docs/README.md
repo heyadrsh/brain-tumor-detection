@@ -45,6 +45,7 @@ python app.py
 ## Technologies Used
 - Python 3.x
 - PyTorch
+- Convolutional Neural Network CNN
 - Flask
 - OpenCV
 - NumPy
