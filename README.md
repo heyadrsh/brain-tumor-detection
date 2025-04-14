@@ -1,4 +1,4 @@
-# 🧠 Brain Tumor Detection System
+# Brain Tumor Detection System
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Python](https://img.shields.io/badge/python-3.8%2B-brightgreen)
@@ -7,19 +7,19 @@
 
 A sophisticated medical imaging platform that uses deep learning to detect and analyze brain tumors from MRI and CT scans with high accuracy.
 
-## 📋 Overview
+## Overview
 
 This application provides healthcare professionals with an intuitive interface to upload and analyze medical brain scans. Using state-of-the-art convolutional neural networks, the system can detect the presence of tumors and provide AI-generated insights to assist medical professionals.
 
-### 🎥 Demo
+### Demo
 
 <p align="center">
-  <video src="public/Brain Tumor Detection Demo.webm" width="700" controls></video>
+  <video src="public/Brain Tumor Detection Demo.mp4" width="700" controls></video>
 </p>
 
-> **Note**: If the video doesn't play in GitHub, [download the demo video](public/Brain%20Tumor%20Detection%20Demo.webm) to view it locally.
+> **Note**: If the video doesn't play in GitHub, [download the demo video](public/Brain%20Tumor%20Detection%20Demo.mp4) to view it locally.
 
-## ✨ Features
+## Features
 
 - **Multi-scan Support**: Analyze both MRI and CT scans
 - **High Accuracy Detection**: Powered by custom-trained CNN models
@@ -28,16 +28,15 @@ This application provides healthcare professionals with an intuitive interface t
 - **PDF Report Generation**: Create and download detailed patient reports
 - **Secure User Authentication**: Protect patient data with user accounts
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Frontend**: HTML, CSS, JavaScript, Bootstrap 5
 - **Backend**: Flask (Python)
 - **Deep Learning**: TensorFlow, PyTorch
-- **AI Suggestions**: Google Gemini 2.0 Flash API
 - **Database**: SQLite with SQLAlchemy ORM
 - **Authentication**: Flask-Login
 
-## 📊 Model Architecture
+## Model Architecture
 
 The brain tumor detection model uses a custom Convolutional Neural Network (CNN) architecture:
 
@@ -48,7 +47,7 @@ The brain tumor detection model uses a custom Convolutional Neural Network (CNN)
 - Dense layers for classification
 - Softmax output layer for multi-class prediction
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -103,7 +102,7 @@ The brain tumor detection model uses a custom Convolutional Neural Network (CNN)
    http://127.0.0.1:5000
    ```
 
-## 📱 Usage
+## Usage
 
 1. **Register/Login**: Create an account or log in to access the system
 2. **Select Scan Type**: Choose between MRI or CT scan analysis
@@ -112,7 +111,7 @@ The brain tumor detection model uses a custom Convolutional Neural Network (CNN)
 5. **Get AI Insights**: Request AI-generated suggestions based on the results
 6. **Generate Report**: Create a downloadable PDF report for the patient
 
-## 🔍 Future Enhancements
+## Future Enhancements
 
 - Integration with hospital PACS systems
 - Support for additional scan types (PET, fMRI)
@@ -120,7 +119,7 @@ The brain tumor detection model uses a custom Convolutional Neural Network (CNN)
 - Mobile application for on-the-go access
 - Cloud deployment for scalability
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -130,11 +129,11 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 📞 Contact
+## Contact
 
 Aadarsh Kumar - [@heyadrsh](https://github.com/heyadrsh) - heyadrsh@gmail.com
 
@@ -143,5 +142,5 @@ Project Link: [https://github.com/heyadrsh/brain-tumor-detection](https://github
 ---
 
 <p align="center">
-  <i>Built with ❤️ for advancing medical diagnostics through AI</i>
+  <i>Built for advancing medical diagnostics through AI</i>
 </p>
