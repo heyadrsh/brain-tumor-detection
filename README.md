@@ -14,10 +14,10 @@ This application provides healthcare professionals with an intuitive interface t
 ### Demo
 
 <p align="center">
-  <video src="public/Brain Tumor Detection Demo.mp4" width="700" controls></video>
+  <img src="public/Brain Tumor Detection Demo.gif" alt="Brain Tumor Detection Demo" width="700">
 </p>
 
-> **Note**: If the video doesn't play in GitHub, [download the demo video](public/Brain%20Tumor%20Detection%20Demo.mp4) to view it locally.
+> **Note**: The GIF above demonstrates the key features of the application.
 
 ## Features
 
