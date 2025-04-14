@@ -3,6 +3,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from datetime import datetime
 import os
+from app.utils.gemini_api import generate_ai_suggestion_for_report
 
 def get_age_group_message(age):
     if age < 10:
@@ -44,11 +45,11 @@ def get_gender_specific_message(gender, prediction):
 
 def get_tumor_recommendations(prediction):
     prediction = prediction.lower().strip()
-    
+
     # Handle variations of "no tumor" prediction
     if any(x in prediction for x in ['no tumor', 'no-tumor', 'notumor', 'normal']):
         return "No tumor was detected. Regular interval check-ups are recommended for monitoring."
-    
+
     # Handle variations of tumor types
     if 'glioma' in prediction:
         return "Glioma detected - requires immediate medical attention. Treatment typically involves a combination of surgery, radiation, and chemotherapy. Early intervention is crucial for better outcomes."
@@ -71,19 +72,19 @@ def generate_report(patient_name, patient_age, patient_gender, scan_type, predic
         # Create reports directory if it doesn't exist
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        
+
         # Generate unique filename using timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"{output_dir}/report_{patient_name}_{timestamp}.pdf"
-        
+
         # Create PDF
         c = canvas.Canvas(filename, pagesize=letter)
         width, height = letter
-        
+
         # Header
         c.setFont("Helvetica", 20)
         c.drawString(1*inch, height-1*inch, "Medical Image Analysis Report")
-        
+
         # Patient Information
         c.setFont("Helvetica", 12)
         y = height - 1.5*inch
@@ -92,13 +93,13 @@ def generate_report(patient_name, patient_age, patient_gender, scan_type, predic
         c.drawString(1*inch, y-40, f"Gender: {patient_gender}")
         c.drawString(1*inch, y-60, f"Scan Type: {scan_type}")
         c.drawString(1*inch, y-80, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        
+
         # Analysis Results
         y -= 120
         c.setFont("Helvetica", 14)
         c.drawString(1*inch, y, "Analysis Results")
         c.setFont("Helvetica", 12)
-        
+
         prediction_lower = prediction.lower()
         if any(x in prediction_lower for x in ['no tumor', 'no-tumor', 'notumor', 'normal']):
             # Simplified report for no-tumor case
@@ -107,16 +108,16 @@ def generate_report(patient_name, patient_age, patient_gender, scan_type, predic
             # Detailed report for tumor cases
             c.drawString(1*inch, y-30, f"Diagnosis: {prediction}")
             c.drawString(1*inch, y-50, f"Confidence: {confidence}")
-            
+
             # Clinical Assessment for tumor cases
             y -= 90
             c.setFont("Helvetica", 14)
             c.drawString(1*inch, y, "Clinical Assessment")
             c.setFont("Helvetica", 12)
-            
+
             # Get recommendations
             recommendations = get_tumor_recommendations(prediction)
-            
+
             # Wrap text for recommendations
             words = recommendations.split()
             line = []
@@ -129,13 +130,13 @@ def generate_report(patient_name, patient_age, patient_gender, scan_type, predic
                     y_offset += 20
             if line:
                 c.drawString(1*inch, y-y_offset, ' '.join(line))
-            
+
             y = y - y_offset - 20
-            
+
             # Additional notes for tumor cases
             c.setFont("Helvetica", 12)
             c.drawString(1*inch, y, "Follow-up Actions:")
-            
+
             # Define follow-up actions based on prediction
             if 'glioma' in prediction_lower:
                 c.drawString(1*inch, y-20, "• Immediate neurosurgical consultation")
@@ -161,7 +162,43 @@ def generate_report(patient_name, patient_age, patient_gender, scan_type, predic
                 c.drawString(1*inch, y-20, "• Specialist consultation recommended")
                 c.drawString(1*inch, y-40, "• Additional diagnostic imaging may be needed")
                 c.drawString(1*inch, y-60, "• Follow-up as directed by specialist")
-        
+
+            # Add AI Suggestion section
+            y -= 100
+            c.setFont("Helvetica", 14)
+            c.drawString(1*inch, y, "AI-Generated Suggestion")
+            c.setFont("Helvetica", 12)
+
+            # Get AI suggestion
+            patient_info = {
+                'name': patient_name,
+                'age': patient_age,
+                'gender': patient_gender
+            }
+
+            scan_result = {
+                'scan_type': scan_type,
+                'prediction': prediction,
+                'confidence': confidence
+            }
+
+            ai_suggestion = generate_ai_suggestion_for_report(patient_info, scan_result)
+
+            # Wrap text for AI suggestion
+            words = ai_suggestion.split()
+            line = []
+            y_offset = 30
+            for word in words:
+                line.append(word)
+                if len(' '.join(line)) > 65:
+                    c.drawString(1*inch, y-y_offset, ' '.join(line[:-1]))
+                    line = [word]
+                    y_offset += 20
+            if line:
+                c.drawString(1*inch, y-y_offset, ' '.join(line))
+
+            y = y - y_offset - 20
+
         # Add image if available
         if os.path.exists(image_path):
             try:
@@ -170,21 +207,21 @@ def generate_report(patient_name, patient_age, patient_gender, scan_type, predic
                     image_y = y - 100  # Higher position for no-tumor case
                 else:
                     image_y = y - 150  # Lower position for tumor cases
-                
+
                 image_height = 3*inch
                 c.drawImage(image_path, 1*inch, image_y-image_height, width=4*inch, height=image_height)
             except Exception as img_error:
                 print(f"Warning: Could not add image to report: {str(img_error)}")
-        
+
         # Footer
         c.setFont("Helvetica", 10)
         c.drawString(1*inch, 1*inch, "This is an AI-generated report and should be reviewed by a medical professional.")
         c.drawString(1*inch, 0.75*inch, f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        
+
         # Save the PDF
         c.save()
         return filename
-        
+
     except Exception as e:
         print(f"Error generating report: {str(e)}")
-        raise Exception(f"Failed to generate report: {str(e)}") 
+        raise Exception(f"Failed to generate report: {str(e)}")

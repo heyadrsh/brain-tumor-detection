@@ -13,40 +13,40 @@
                 <h1 class="text-secondary fw-normal">Sign in to your account to continue</h1>
                 <p class="text-muted mt-2">Access advanced medical image analysis tools</p>
             </div>
-            
+
             <div class="login-form bg-white p-4 rounded-4 shadow-sm">
                 <form method="POST">
                     <div class="form-group mb-4">
-                        <label class="form-label">Username</label>
+                        <label class="form-label">Email</label>
                         <div class="input-field">
-                            <i class="fas fa-user"></i>
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="username" 
-                                   name="username" 
+                            <i class="fas fa-envelope"></i>
+                            <input type="email"
+                                   class="form-control"
+                                   id="email"
+                                   name="email"
                                    required>
                         </div>
                     </div>
-                    
+
                     <div class="form-group mb-4">
                         <label class="form-label">Password</label>
                         <div class="input-field">
                             <i class="fas fa-lock"></i>
-                            <input type="password" 
-                                   class="form-control" 
-                                   id="password" 
-                                   name="password" 
+                            <input type="password"
+                                   class="form-control"
+                                   id="password"
+                                   name="password"
                                    required>
                         </div>
                     </div>
-                    
+
                     <button type="submit" class="btn btn-primary w-100 mb-4">
                         Sign In
                     </button>
-                    
+
                     <div class="text-center">
                         <p class="text-secondary">
-                            Don't have an account? 
+                            Don't have an account?
                             <a href="{{ url_for('register') }}" class="text-primary text-decoration-none">
                                 Create an account
                             </a>
@@ -213,14 +213,88 @@
         .col-lg-4 {
             padding: 0 1.5rem;
         }
-        
+
         .features-section {
             margin-top: 3rem;
         }
-        
+
         .feature-item {
             margin-bottom: 2rem;
         }
     }
 </style>
-{% endblock %} 
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .success-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        color: white;
+        font-size: 2rem;
+        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 15px 20px -3px rgba(37, 99, 235, 0.3);
+        }
+        100% {
+            transform: scale(1);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+        }
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if there's a success message
+        const alerts = document.querySelectorAll('.alert-success');
+        if (alerts.length > 0) {
+            // Create and show modal for successful registration
+            const modalHtml = `
+                <div class="modal fade" id="registrationSuccessModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content rounded-4 border-0 shadow-lg">
+                            <div class="modal-header" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border-radius: 12px 12px 0 0;">
+                                <h5 class="modal-title fw-bold">Registration Successful!</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center p-5">
+                                <div class="mb-4">
+                                    <div class="success-icon-wrapper">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                                <h4 class="fw-bold mb-3">Your account has been created successfully!</h4>
+                                <p class="text-muted">You can now log in with your credentials to access all features of the Medical Image Analysis Platform.</p>
+                            </div>
+                            <div class="modal-footer border-0 justify-content-center pb-4">
+                                <button type="button" class="btn btn-primary px-4 py-2 rounded-pill" data-bs-dismiss="modal">Continue to Login</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Append modal to body
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // Show the modal
+            const successModal = new bootstrap.Modal(document.getElementById('registrationSuccessModal'));
+            successModal.show();
+        }
+    });
+</script>
+{% endblock %}

@@ -93,36 +93,36 @@ def get_system_metrics():
         'cpu_usage': None,
         'memory_usage': None
     }
-    
+
     if psutil:
         try:
             metrics['cpu_usage'] = f"{psutil.cpu_percent()}%"
             metrics['memory_usage'] = f"{psutil.virtual_memory().percent}%"
         except Exception as e:
             print(f"Error getting system metrics: {e}")
-    
+
     return metrics
 
 def preprocess_image(image, transform, is_mri=True):
     """Preprocess image to ensure consistent size and format"""
     if image.mode != 'RGB':
         image = image.convert('RGB')
-    
+
     target_size = image_size if is_mri else (224, 224)
     image = image.resize(target_size, Image.Resampling.LANCZOS)
-    
+
     image_tensor = transform(image)
     image_tensor = image_tensor.unsqueeze(0)
-    
+
     return image_tensor
 
 @app.route('/predict', methods=['POST'])
 def predict():
     scan_type = request.form.get('scan_type', 'mri')
-    
+
     if 'file' not in request.files:
         return jsonify({'error': 'No file uploaded', 'success': False})
-    
+
     file = request.files['file']
     if file.filename == '':
         return jsonify({'error': 'No file selected', 'success': False})
@@ -134,15 +134,15 @@ def predict():
 
         # Read and preprocess image
         image = Image.open(file).convert('RGB')
-        
+
         if scan_type == 'mri':
             if mri_model is None:
                 return jsonify({'error': 'MRI model not loaded', 'success': False})
-                
+
             # MRI Processing
             image_tensor = preprocess_image(image, mri_transform, is_mri=True)
             preprocessing_time = time.time() - preprocessing_start
-            
+
             # Inference timing
             inference_start = time.time()
             with torch.no_grad():
@@ -151,7 +151,7 @@ def predict():
                 prediction = mri_classes[predicted.item()]
                 probabilities = torch.nn.functional.softmax(outputs, dim=1)[0]
                 confidence = probabilities[predicted.item()].item() * 100
-                
+
                 scores = {}
                 for class_name, prob in zip(mri_classes, probabilities):
                     formatted_name = class_name.replace('_', '-')
@@ -159,11 +159,11 @@ def predict():
         else:
             if ct_model is None:
                 return jsonify({'error': 'CT model not loaded', 'success': False})
-                
+
             # CT Processing
             image_tensor = preprocess_image(image, ct_transform, is_mri=False)
             preprocessing_time = time.time() - preprocessing_start
-            
+
             inference_start = time.time()
             with torch.no_grad():
                 outputs = ct_model(image_tensor)
@@ -171,7 +171,7 @@ def predict():
                 prediction = ct_classes[predicted.item()]
                 probabilities = torch.nn.functional.softmax(outputs, dim=1)[0]
                 confidence = probabilities[predicted.item()].item() * 100
-                
+
                 scores = {
                     class_name.lower(): prob.item()
                     for class_name, prob in zip(ct_classes, probabilities)
@@ -191,14 +191,14 @@ def predict():
 
         # Format prediction
         formatted_prediction = prediction.replace('_', '-')
-        
+
         # Store prediction and confidence in session
         session['last_prediction'] = formatted_prediction
         session['last_confidence'] = confidence
-        
+
         # Get model information
         model_info = MODEL_INFO[scan_type]
-        
+
         return jsonify({
             'success': True,
             'prediction': formatted_prediction,
@@ -226,76 +226,11 @@ def predict():
         print(f"Error in prediction: {str(e)}")
         return jsonify({'error': str(e), 'success': False})
 
-@app.route('/')
-def home():
-    if current_user.is_authenticated:
-        return redirect(url_for('select_scan_type'))
-    return redirect(url_for('login'))
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        user = User.query.filter_by(username=username).first()
-        
-        if user and check_password_hash(user.password_hash, password):
-            login_user(user)
-            return redirect(url_for('select_scan_type'))
-        
-        flash('Invalid username or password')
-    return render_template('login.html')
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        
-        if User.query.filter_by(username=username).first():
-            flash('Username already exists')
-            return redirect(url_for('register'))
-            
-        if User.query.filter_by(email=email).first():
-            flash('Email already exists')
-            return redirect(url_for('register'))
-        
-        new_user = User(username=username, email=email)
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-        
-        flash('Registration successful! Please login.')
-        return redirect(url_for('login'))
-    return render_template('register.html')
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
-@app.route('/select_scan_type')
-@login_required
-def select_scan_type():
-    return render_template('select_scan.html')
-
-@app.route('/mri_analysis')
-@login_required
-def mri_analysis():
-    return render_template('mri_analysis.html')
-
-@app.route('/ct_analysis')
-@login_required
-def ct_analysis():
-    return render_template('ct_analysis.html')
-
 @app.route('/generate_report', methods=['POST'])
 def generate_report_route():
     try:
         data = request.get_json()
-        
+
         # Extract data from request
         patient_name = data.get('patient_name', 'Unknown')
         patient_age = data.get('patient_age', 0)
@@ -304,33 +239,46 @@ def generate_report_route():
         prediction = data.get('prediction', 'Unknown')
         confidence = data.get('confidence', '0')
         image_path = data.get('image_path', '')
-        
+
         # Create a temporary file for the image
         if image_path.startswith('data:image'):
             # Convert base64 to image file
             import base64
             image_data = image_path.split(',')[1]
             image_bytes = base64.b64decode(image_data)
-            
+
             # Create uploads directory if it doesn't exist
             upload_dir = os.path.join('app', 'static', 'uploads')
             if not os.path.exists(upload_dir):
                 os.makedirs(upload_dir)
-            
+
             # Save temporary image file
             temp_image_path = os.path.join(upload_dir, f'temp_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png')
             with open(temp_image_path, 'wb') as f:
                 f.write(image_bytes)
             image_path = temp_image_path
-        
+
         # Clean the confidence value
         confidence = float(confidence.strip('%') if isinstance(confidence, str) else confidence)
-        
+
         # Create reports directory in static folder
         reports_dir = os.path.join('app', 'static', 'reports')
         if not os.path.exists(reports_dir):
             os.makedirs(reports_dir)
-        
+
+        # Prepare patient info and scan result for AI suggestion
+        patient_info = {
+            'name': patient_name,
+            'age': int(patient_age),
+            'gender': patient_gender
+        }
+
+        scan_result = {
+            'scan_type': scan_type,
+            'prediction': prediction,
+            'confidence': confidence
+        }
+
         # Generate the report
         report_path = generate_report(
             patient_name=patient_name,
@@ -342,19 +290,19 @@ def generate_report_route():
             image_path=image_path,
             output_dir=reports_dir
         )
-        
+
         # Clean up temporary image file
         if 'temp_' in image_path and os.path.exists(image_path):
             os.remove(image_path)
-        
+
         # Convert the report path to a URL
         report_url = url_for('static', filename=f'reports/{os.path.basename(report_path)}')
-        
+
         return jsonify({
             'success': True,
             'report_url': report_url
         })
-        
+
     except Exception as e:
         print(f"Error in generate_report route: {str(e)}")
         return jsonify({
@@ -369,13 +317,13 @@ def export_dicom_route():
         data = request.get_json()
         image_path = data.get('image_path')
         patient_name = data.get('patient_name')
-        
+
         # Export to DICOM
         dicom_path = export_to_dicom(
             image_path=image_path,
             patient_name=patient_name
         )
-        
+
         return jsonify({
             'success': True,
             'download_url': url_for('download_dicom', filename=os.path.basename(dicom_path))
@@ -400,6 +348,42 @@ def download_dicom(filename):
         as_attachment=True,
         download_name=filename
     )
+
+@app.route('/select_scan_type')
+def select_scan_type():
+    return render_template('select_scan.html')
+
+@app.route('/mri_analysis')
+def mri_analysis():
+    return render_template('mri_analysis.html')
+
+@app.route('/ct_analysis')
+def ct_analysis():
+    return render_template('ct_analysis.html')
+
+@app.route('/get_ai_suggestion', methods=['POST'])
+def get_ai_suggestion():
+    try:
+        data = request.json
+        patient_info = data.get('patient_info', {})
+        scan_result = data.get('scan_result', {})
+
+        # Import the Gemini API utility
+        from app.utils.gemini_api import generate_ai_suggestion
+
+        # Generate the AI suggestion
+        suggestion = generate_ai_suggestion(patient_info, scan_result)
+
+        return jsonify({
+            'success': True,
+            'suggestion': suggestion
+        })
+    except Exception as e:
+        print(f"Error in get_ai_suggestion: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
 
 if __name__ == '__main__':
     with app.app_context():

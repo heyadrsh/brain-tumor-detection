@@ -57,34 +57,41 @@ def init_routes(app):
             email = request.form.get('email')
             password = request.form.get('password')
             user = User.query.filter_by(email=email).first()
-            
-            if user and check_password_hash(user.password, password):
+
+            if user and user.check_password(password):
                 login_user(user)
                 return redirect(url_for('index'))
             else:
                 flash('Invalid email or password')
-        
+
         return render_template('login.html')
 
     @app.route('/register', methods=['GET', 'POST'])
     def register():
         if request.method == 'POST':
+            username = request.form.get('username')
             email = request.form.get('email')
             password = request.form.get('password')
-            
+
             if User.query.filter_by(email=email).first():
                 flash('Email already exists')
                 return redirect(url_for('register'))
-            
+
+            if User.query.filter_by(username=username).first():
+                flash('Username already exists')
+                return redirect(url_for('register'))
+
             new_user = User(
+                username=username,
                 email=email,
-                password=generate_password_hash(password, method='sha256')
+                password=password  # This will use the password setter method
             )
             db.session.add(new_user)
             db.session.commit()
-            
+
+            flash('Registration successful! You can now log in.', 'success')
             return redirect(url_for('login'))
-        
+
         return render_template('register.html')
 
     @app.route('/logout')
@@ -94,5 +101,5 @@ def init_routes(app):
         return redirect(url_for('index'))
 
     # Add all your other routes here...
-    
-    return app 
+
+    return app
