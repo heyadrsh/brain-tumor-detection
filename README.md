@@ -137,8 +137,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Aadarsh Kumar - [@heyadrsh](https://github.com/heyadrsh) - heyadrsh@gmail.com
 
-Project Link: [https://github.com/heyadrsh/brain-tumor-detection](https://github.com/heyadrsh/brain-tumor-detection)
-
 ---
 
 <p align="center">
